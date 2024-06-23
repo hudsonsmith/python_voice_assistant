@@ -1,10 +1,6 @@
-import struct
 
 import speech_recognition as sr
-import pyaudio
 import pyttsx3
-import time
-import pvporcupine
 
 Active = False
 afkCounter = 0
