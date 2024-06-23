@@ -21,6 +21,7 @@ def speak(text, gender):
      print("APOLLO:" + text + "\n")
      engine.say(text)
      engine.runAndWait()
+     
 def getCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
