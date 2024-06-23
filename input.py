@@ -1,11 +1,5 @@
-
-import struct
-
 import speech_recognition as sr
-import pyaudio
 import pyttsx3
-import time
-import pvporcupine
 
 Active = False
 afkCounter = 0
@@ -21,7 +15,6 @@ def speak(text, gender):
      print("APOLLO:" + text + "\n")
      engine.say(text)
      engine.runAndWait()
-     
 def getCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -34,13 +27,10 @@ def getCommand():
 
 def doTask():
     print("Placeholder")
-
-def runner(counter, Active):
+def runner(afkCounter,Active):
     while True:
         command = getCommand()
-        if command == "":
-            counter+= 1
-        print("User:" + command)
+        print("User:" + command + "\n")
         if Active:
             doTask()
         if "apollo" in command:
@@ -49,10 +39,10 @@ def runner(counter, Active):
         elif "bye" in command:
             speak("Going to sleep.", "Male")
             Active = False
-        elif counter > 10 and Active == True:
+        elif afkCounter > 30 and Active == True:
             speak("Going to sleep.", "Male")
             Active = False
 
 
 
-runner(afkCounter, Active)
+runner(afkCounter,Active)
