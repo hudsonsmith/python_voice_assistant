@@ -30,7 +30,7 @@ def getCommand():
             query = r.recognize_google(audio, language = "en-US")
         except Exception as e:
             query = ""
-    return query
+    return query.lower()
 
 def doTask():
     print("Placeholder")
@@ -43,7 +43,7 @@ def runner(counter, Active):
         print("User:" + command)
         if Active:
             doTask()
-        if "apollo" in command or "Apollo" in command:
+        if "apollo" in command:
             speak("How may I help you?", "Male")
             Active = True
         elif "bye" in command:
