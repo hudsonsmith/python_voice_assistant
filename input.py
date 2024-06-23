@@ -1,6 +1,18 @@
+#           $$\                   $$\             $$\     $$\                        $$$$$$\                      $$\
+#           $$ |                  $$ |            $$ |    $$ |                      $$  __$$\                     $$ |
+#  $$$$$$$\ $$$$$$$\  $$\   $$\ $$$$$$\         $$$$$$\   $$$$$$$\   $$$$$$\        $$ /  \__|$$\   $$\  $$$$$$$\ $$ |  $$\       $$\   $$\  $$$$$$\
+# $$  _____|$$  __$$\ $$ |  $$ |\_$$  _|        \_$$  _|  $$  __$$\ $$  __$$\       $$$$\     $$ |  $$ |$$  _____|$$ | $$  |      $$ |  $$ |$$  __$$\
+# \$$$$$$\  $$ |  $$ |$$ |  $$ |  $$ |            $$ |    $$ |  $$ |$$$$$$$$ |      $$  _|    $$ |  $$ |$$ /      $$$$$$  /       $$ |  $$ |$$ /  $$ |
+#  \____$$\ $$ |  $$ |$$ |  $$ |  $$ |$$\         $$ |$$\ $$ |  $$ |$$   ____|      $$ |      $$ |  $$ |$$ |      $$  _$$<        $$ |  $$ |$$ |  $$ |
+# $$$$$$$  |$$ |  $$ |\$$$$$$  |  \$$$$  |        \$$$$  |$$ |  $$ |\$$$$$$$\       $$ |      \$$$$$$  |\$$$$$$$\ $$ | \$$\       \$$$$$$  |$$$$$$$  |
+# \_______/ \__|  \__| \______/    \____/          \____/ \__|  \__| \_______|      \__|       \______/  \_______|\__|  \__|       \______/ $$  ____/
+import struct
 
 import speech_recognition as sr
+import pyaudio
 import pyttsx3
+import time
+import pvporcupine
 
 Active = False
 afkCounter = 0
@@ -25,12 +37,18 @@ def getCommand():
         except Exception as e:
             query = ""
     return query
-def runner(counter):
+
+def doTask():
+    print("Placeholder")
+
+def runner(counter, Active):
     while True:
         command = getCommand()
         if command == "":
             counter+= 1
         print("User:" + command)
+        if Active:
+            doTask()
         if "apollo" in command or "Apollo" in command:
             speak("How may I help you?", "Male")
             Active = True
@@ -43,4 +61,4 @@ def runner(counter):
 
 
 
-runner(afkCounter)
+runner(afkCounter, Active)
