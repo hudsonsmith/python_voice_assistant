@@ -44,7 +44,7 @@ def runner(afkCounter,Active):
         elif "bye" in command:
             speak("Going to sleep.", "Male")
             Active = False
-        elif afkCounter > 30 and Active == True:
+        elif afkCounter > 10 and Active == True:
             speak("Going to sleep.", "Male")
             Active = False
 
