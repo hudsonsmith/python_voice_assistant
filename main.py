@@ -5,6 +5,10 @@ import pyaudio
 import pyttsx3
 import time
 import pvporcupine
+import APOLLO
+import shutup
+
+shutup.please()
 
 Active = False
 afkCounter = 0
@@ -30,20 +34,22 @@ def getCommand():
             query = ""
     return query.lower()
 
-def doTask():
-    print("Placeholder")
+def doTask(command):
+    return APOLLO.output(command)
 def runner(afkCounter,Active):
     while True:
         command = getCommand()
         print("User:" + command + "\n")
         if Active:
-            doTask()
-        if "apollo" in command:
-            speak("How may I help you?", "Male")
-            Active = True
-        elif "bye" in command:
+            if command != "":
+                out = doTask(command)
+                speak(out,"Male")
+        if "that will be all" in command:
             speak("Going to sleep.", "Male")
             Active = False
+        elif "apollo" in command:
+            speak("How may I help you?", "Male")
+            Active = True
         elif afkCounter > 10 and Active == True:
             speak("Going to sleep.", "Male")
             Active = False
