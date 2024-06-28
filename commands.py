@@ -1,4 +1,5 @@
 import pyautogui as pg
+import time
 
 screenWidth, screenHeight = pg.size()
 currentMouseX, currentMouseY = pg.position()
@@ -24,3 +25,5 @@ def press(key):
 def scroll(clicks):
     pg.scroll(clicks)
 
+def sleep(seconds):
+    time.sleep(seconds)
