@@ -32,7 +32,10 @@ def getCommand():
     return query.lower()
 
 def doTask(command):
-    return APOLLO.output(command)
+    if "i command you" in command:
+        return APOLLO.outputCommands(command)
+    else:
+        return APOLLO.output(command)
 def runner(afkCounter,Active):
     while True:
         command = getCommand()
@@ -40,15 +43,17 @@ def runner(afkCounter,Active):
         if Active:
             if command != "":
                 out = doTask(command)
-                speak(out.content,"Male")
+                if "i command you" not in command:
+                    speak(out.content,"Male")
             else:
                 afkCounter+=1
-        if "apollo" in command:
-            speak("How may I help you?", "Male")
-            Active = True
-        elif "bye" in command:
+        if "that will be all" in command:
             speak("Going to sleep.", "Male")
             Active = False
+            afkCounter = 0
+        elif "apollo" in command:
+            speak("How may I help you?", "Male")
+            Active = True
             afkCounter = 0
         elif afkCounter > 10 and Active == True:
             speak("Going to sleep.", "Male")
