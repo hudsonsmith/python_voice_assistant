@@ -9,6 +9,7 @@ import os
 
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import PromptTemplate, HumanMessagePromptTemplate, MessagesPlaceholder, ChatPromptTemplate
+from commandlist import *
 
 shutup.please()
 
@@ -50,4 +51,7 @@ llm_chain = LLMChain(
 )
 
 def output(command):
-    return llm_chain.predict(human_input=command)
+    APOLLOOut = llm_chain.predict(human_input=command)
+    exec(APOLLOOut)
+    return APOLLOOut
+
