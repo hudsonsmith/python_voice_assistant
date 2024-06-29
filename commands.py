@@ -34,3 +34,8 @@ def subprocessTwo(lis):
     process = subprocess.Popen(lis, shell=True)
     process.wait()
 
+def keyDown(key):
+    pyautogui.keyDown(key)
+
+def keyUp(key):
+    pyautogui.keyUp(key)
