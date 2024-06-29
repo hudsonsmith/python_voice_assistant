@@ -1,29 +1,36 @@
-import pyautogui as pg
+import pyautogui
 import time
+import os
+import subprocess
 
-screenWidth, screenHeight = pg.size()
-currentMouseX, currentMouseY = pg.position()
+screenWidth, screenHeight = pyautogui.size()
+currentMouseX, currentMouseY = pyautogui.position()
 
 def screenSpecs():
     return screenWidth, screenHeight, currentMouseX, currentMouseY
 
 def moveCursor(x,y):
-    pg.moveTo(x,y)
+    pyautogui.moveTo(x,y)
 
 def rightClick():
-    pg.rightClick()
+    pyautogui.rightClick()
 
 def leftClick():
-    pg.leftClick()
+    pyautogui.leftClick()
 
 def write(text):
-    pg.write(text)
+    pyautogui.write(text)
 
 def press(key):
-    pg.press(key)
+    pyautogui.press(key)
 
 def scroll(clicks):
-    pg.scroll(clicks)
+    pyautogui.scroll(clicks)
 
 def sleep(seconds):
     time.sleep(seconds)
+
+def subprocessTwo(lis):
+    process = subprocess.Popen(lis, shell=True)
+    process.wait()
+
