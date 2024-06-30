@@ -24,10 +24,10 @@ def speak(text, gender):
 def getCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        audio = r.listen(source=source)
+        audio = r.listen(source)
         try:
-            query = r.recognize_google(audio, language = "en-US")
-        except Exception as e:
+            query = r.recognize_google(audio, language="en-US")
+        except:
             query = ""
     return query.lower()
 
