@@ -21,6 +21,9 @@ def leftClick():
 def write(text):
     pyautogui.write(text)
 
+def drag(x,y):
+    pyautogui.dragTo(x,y)
+
 def press(key):
     pyautogui.press(key)
 
@@ -39,9 +42,6 @@ def keyDown(key):
 
 def keyUp(key):
     pyautogui.keyUp(key)
-
-def drag(x,y):
-    pyautogui.dragTo(x,y)
 
 def hotkey(tup):
     pyautogui.hotkey(tup)
