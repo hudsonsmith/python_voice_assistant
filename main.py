@@ -44,7 +44,7 @@ def runner(afkCounter,Active):
             if command != "":
                 out = doTask(command)
                 if "i command you" not in command:
-                    speak(out.content,"Male")
+                    speak(out,"Male")
             else:
                 afkCounter+=1
         if "that will be all" in command:
@@ -62,4 +62,4 @@ def runner(afkCounter,Active):
 
 
 
-runner(afkCounter,Active)
+doTask("i command you to subscribe to Wollypolly yt.")
