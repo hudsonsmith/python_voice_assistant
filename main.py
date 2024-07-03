@@ -6,6 +6,7 @@ import pyttsx3
 import time
 import pvporcupine
 import APOLLO
+import commands
 
 Active = False
 afkCounter = 0
@@ -33,7 +34,9 @@ def getCommand():
 
 def doTask(command):
     if "i command you" in command:
-        return APOLLO.outputCommands(command)
+        while not APOLLO.outputCommands(command):
+            pass
+        return "Task completed."
     else:
         return APOLLO.output(command)
 def runner(afkCounter,Active):
@@ -62,4 +65,4 @@ def runner(afkCounter,Active):
 
 
 
-doTask("i command you to subscribe to Wollypolly yt.")
+runner(afkCounter, Active)
