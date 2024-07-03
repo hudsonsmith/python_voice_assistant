@@ -45,3 +45,8 @@ def keyUp(key):
 
 def hotkey(tup):
     pyautogui.hotkey(tup)
+
+def screenshot():
+    image = pyautogui.screenshot()
+    image.save("screenshot.png")
+    return "screenshot.png"
