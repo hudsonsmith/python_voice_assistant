@@ -1,3 +1,4 @@
+
 import base64
 
 from langchain.chains.llm import LLMChain
@@ -17,7 +18,7 @@ def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
 
-os.environ['OPENAI_API_KEY'] = "sk-proj-vcRYkgWpMYCtw8UmEgfHT3BlbkFJI50EwzcnrPjntWvnCylT"
+os.environ['OPENAI_API_KEY'] = "API_KEY"
 
 APOLLO = ChatOpenAI(model="gpt-3.5-turbo", max_tokens=256)
 
@@ -117,6 +118,7 @@ def output(command):
 
 def outputCommands(command):
     APOLLOOut = llm_chain_one.predict(human_input=command)
+    print(APOLLOOut)
     try:
         APOLLOOut=APOLLOOut.replace("```","")
         APOLLOOut=APOLLOOut.replace("python","")
