@@ -34,14 +34,12 @@ def getCommand():
 
 def doTask(command):
     if "i command you" in command:
-        while not APOLLO.outputCommands(command):
-            pass
-        return "Task completed."
+        return APOLLO.outputCommands(command)
     else:
         return APOLLO.output(command)
 def runner(afkCounter,Active):
     while True:
-        command = getCommand()
+        command = input()
         print("User:" + command + "\n")
         if Active:
             if command != "":
