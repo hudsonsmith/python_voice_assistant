@@ -1,10 +1,6 @@
-import struct
-
 import speech_recognition as sr
-import pyaudio
 import pyttsx3
 import time
-import pvporcupine
 import APOLLO
 import commands
 
@@ -12,16 +8,17 @@ Active = False
 afkCounter = 0
 
 def speak(text, gender):
-     engine = pyttsx3.init('sapi5')
-     voices = engine.getProperty('voices')
-     if gender == "Female":
-         i = 1
-     else:
-         i = 0
-     engine.setProperty('voice',voices[i].id)
-     print("APOLLO:" + text + "\n")
-     engine.say(text)
-     engine.runAndWait()
+    engine = pyttsx3.init('sapi5')
+    voices = engine.getProperty('voices')
+    if gender == "Female":
+        i = 1
+    else:
+        i = 0
+    engine.setProperty('voice', voices[i].id)
+    print("APOLLO: " + text)
+    engine.say(text)
+    engine.runAndWait()
+
 def getCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -37,17 +34,18 @@ def doTask(command):
         return APOLLO.outputCommands(command)
     else:
         return APOLLO.output(command)
-def runner(afkCounter,Active):
+
+def runner(afkCounter, Active):
     while True:
         command = input()
-        print("User:" + command + "\n")
+        print("User: " + command)
         if Active:
             if command != "":
                 out = doTask(command)
                 if "i command you" not in command:
-                    speak(out,"Male")
+                    speak(out, "Male")
             else:
-                afkCounter+=1
+                afkCounter += 1
         if "that will be all" in command:
             speak("Going to sleep.", "Male")
             Active = False
@@ -56,11 +54,9 @@ def runner(afkCounter,Active):
             speak("How may I help you?", "Male")
             Active = True
             afkCounter = 0
-        elif afkCounter > 10 and Active == True:
+        elif afkCounter > 10 and Active:
             speak("Going to sleep.", "Male")
             Active = False
             afkCounter = 0
-
-
 
 runner(afkCounter, Active)
