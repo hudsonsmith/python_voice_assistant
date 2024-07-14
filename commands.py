@@ -1,6 +1,5 @@
 import pyautogui
 import time
-import os
 import subprocess
 
 screenWidth, screenHeight = pyautogui.size()
@@ -9,8 +8,8 @@ currentMouseX, currentMouseY = pyautogui.position()
 def screenSpecs():
     return screenWidth, screenHeight, currentMouseX, currentMouseY
 
-def moveCursor(x,y):
-    pyautogui.moveTo(x,y)
+def moveCursor(x, y):
+    pyautogui.moveTo(x, y)
 
 def rightClick():
     pyautogui.rightClick()
@@ -21,8 +20,8 @@ def leftClick():
 def write(text):
     pyautogui.write(text)
 
-def drag(x,y):
-    pyautogui.dragTo(x,y)
+def drag(x, y):
+    pyautogui.dragTo(x, y)
 
 def press(key):
     pyautogui.press(key)
@@ -48,5 +47,6 @@ def hotkey(tup):
 
 def screenshot():
     image = pyautogui.screenshot()
-    image.save("screenshot.png")
-    return "screenshot.png"
+    image_path = "screenshot.png"
+    image.save(image_path)
+    return image_path
