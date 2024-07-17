@@ -127,7 +127,7 @@ def outputCommands(command):
                     def minimize_all_windows():
                         subprocess.run('powershell -command "& (Add-Type -TypeDefinition \\"using System; using System.Runtime.InteropServices; public class Win32 ( [DllImport(\\"user32.dll\\")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow); )\\"; [System.Diagnostics.Process]::GetProcesses() | ForEach-Object ( $handle = $_.MainWindowHandle; [Win32]::ShowWindowAsync($handle, 6) ) )"',shell=True)                                 
         
-        Reminder, your job is to generate the subtaks and their descrptions, not the code itself, this is just for your reference to see what your capabilities are.
+        Reminder, your job is to generate the subtaks and their descrptions, not the code itself, this is just for your reference to see what your capabilities are. Do not returns the functions directly, you are to return written descriptions of each subtask that needs to be done in order.
         
         Here is a screenshot of the existing screen state, reference your planning off of the current screen state as context if needed:
     """
