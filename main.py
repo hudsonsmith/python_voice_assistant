@@ -3,6 +3,8 @@ import pyttsx3
 import time
 import APOLLO
 import commands
+import pyaudio
+
 
 Active = False
 afkCounter = 0
@@ -15,7 +17,7 @@ def speak(text, gender):
     else:
         i = 0
     engine.setProperty('voice', voices[i].id)
-    print("APOLLO: " + text)
+    print("[APOLLO] " + text)
     engine.say(text)
     engine.runAndWait()
 
@@ -35,7 +37,7 @@ def doTask(command):
 def runner(afkCounter, Active):
     while True:
         command = input()
-        print("User: " + command)
+        print("[USER] " + command)
         if Active:
             if command != "":
                 out = doTask(command)
@@ -47,7 +49,7 @@ def runner(afkCounter, Active):
             Active = False
             afkCounter = 0
         elif "apollo" in command:
-            speak("How may I help you?", "Male")
+            speak("APOLLO on standby sir.", "Male")
             Active = True
             afkCounter = 0
         elif afkCounter > 10 and Active:
