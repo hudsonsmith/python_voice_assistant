@@ -36,7 +36,7 @@ def doTask(command):
 
 def runner(afkCounter, Active):
     while True:
-        command = input()
+        command = getCommand()
         print("[USER] " + command)
         if Active:
             if command != "":
