@@ -1,6 +1,16 @@
 import pyautogui
 import time
 import subprocess
+import os
+import pygetwindow as gw
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from screen_brightness_control import set_brightness
+import requests
+from bs4 import BeautifulSoup
+
+
 
 screenWidth, screenHeight = pyautogui.size()
 currentMouseX, currentMouseY = pyautogui.position()
@@ -29,7 +39,7 @@ def press(key):
 def scroll(clicks):
     pyautogui.scroll(clicks)
 
-def sleep(seconds):
+def wait(seconds):
     time.sleep(seconds)
 
 def subprocessTwo(lis):
@@ -38,13 +48,27 @@ def subprocessTwo(lis):
 
 def keyDown(key):
     pyautogui.keyDown(key)
-
 def keyUp(key):
     pyautogui.keyUp(key)
 
 def hotkey(tup):
     pyautogui.hotkey(tup)
 
+def doubleClick():
+    pyautogui.rightClick()
+    pyautogui.rightClick()
+
+def open_application(app_name):
+    pyautogui.press('win')
+    pyautogui.write(app_name)
+    pyautogui.press('enter')
+def use_searchBar(query):
+    pyautogui.keyDown("ctrl")
+    pyautogui.keyDown("l")
+    pyautogui.keyUp("l")
+    pyautogui.keyUp("ctrl")
+    pyautogui.write(query)
+    pyautogui.press("enter")
 def screenshot():
     image = pyautogui.screenshot()
     image_path = "screenshot.png"
