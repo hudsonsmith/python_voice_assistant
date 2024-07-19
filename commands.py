@@ -1,14 +1,6 @@
 import pyautogui
 import time
 import subprocess
-import os
-import pygetwindow as gw
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from screen_brightness_control import set_brightness
-import requests
-from bs4 import BeautifulSoup
 
 
 
