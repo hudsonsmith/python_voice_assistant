@@ -1,5 +1,4 @@
-# python_voice_assistant
-Python voice assistant lol
+# APOLLO: A Personal Voice Assistant for Computer Tasks
 
 ## Goals
 User voice input
