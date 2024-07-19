@@ -44,7 +44,6 @@ def runner(text_widget):
         command = getCommand()
         text_widget.insert(tk.END, f"User: {command}\n")
         text_widget.see(tk.END)
-
         if command != "":
             out = doTask(command)
             speak(out, "Male")
@@ -52,14 +51,7 @@ def runner(text_widget):
             text_widget.see(tk.END)
         else:
             afkCounter += 1
-
-        if "that will be all" in command:
-            speak("Going to sleep.", "Male")
-            text_widget.insert(tk.END, "[APOLLO] Going to sleep.\n")
-            text_widget.see(tk.END)
-            Active = False
-            afkCounter = 0
-        elif "apollo" in command or "appollo" in command:
+        if "apollo" in command:
             speak("How may I help you?", "Male")
             text_widget.insert(tk.END, "[APOLLO] How may I help you?\n")
             text_widget.see(tk.END)
