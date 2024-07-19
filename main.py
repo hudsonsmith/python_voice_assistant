@@ -68,13 +68,13 @@ def create_gui():
     root = tk.Tk()
     root.title("APOLLO Assistant")
 
-    logo = tk.PhotoImage(file='pngtree-sun-icon-logo-png-png-image_5687131.png')
+    logo = tk.PhotoImage(file='logo.png')
     root.iconphoto(False, logo)
 
     text_widget = tk.Text(root, wrap=tk.WORD)
     text_widget.pack(expand=True, fill=tk.BOTH)
 
-    gif_path = "ezgif.com-gif-maker.gif"
+    gif_path = "apollo_orb.gif"
     gif = Image.open(gif_path)
 
     gif_frames = []
