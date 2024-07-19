@@ -11,6 +11,8 @@ def screenSpecs():
     return screenWidth, screenHeight, currentMouseX, currentMouseY
 
 def moveCursor(x, y):
+    x = (x / 100) * screenWidth
+    y = (y / 100) * screenHeight
     pyautogui.moveTo(x, y)
 
 def rightClick():
@@ -22,8 +24,10 @@ def leftClick():
 def write(text):
     pyautogui.write(text)
 
-def drag(x, y):
-    pyautogui.dragTo(x, y)
+def drag(x,y):
+    x = (x/100)*screenWidth
+    y = (y/100)*screenHeight
+    pyautogui.dragTo(x,y)
 
 def press(key):
     pyautogui.press(key)
