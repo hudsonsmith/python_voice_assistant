@@ -1,18 +1,14 @@
 from PIL import Image, ImageTk
-import struct
-import speech_recognition as sr
-import pyaudio
-import pyttsx3
-import time
-import pvporcupine
 import APOLLO
-import commands
+from commands import *
 import tkinter as tk
-from threading import Thread
+from threading import Thread, Event
+import pyttsx3
 
 Active = False
 afkCounter = 0
-listening_thread = None
+title = "sir"
+stop_event = Event()
 
 def speak(text, gender):
     engine = pyttsx3.init('sapi5')
@@ -38,31 +34,30 @@ def getCommand():
 def doTask(command):
     return APOLLO.outputCommands(command)
 
-def runner(text_widget):
+def runner(stop_event, text_widget):
+    text_widget.insert(tk.END, "[APOLLO] Apollo is ready for service.\n")
     global Active, afkCounter
-    while Active:
+    Active = False
+    while not stop_event.is_set():
         command = getCommand()
-        text_widget.insert(tk.END, f"User: {command}\n")
-        text_widget.see(tk.END)
-        if command != "":
-            out = doTask(command)
-            speak(out, "Male")
-            text_widget.insert(tk.END, f"[APOLLO] {out}\n")
-            text_widget.see(tk.END)
-        else:
-            afkCounter += 1
+        text_widget.insert(tk.END, f"[USER] {command}\n")
+        if Active:
+            if command != "":
+                text_widget.insert(tk.END, f"[USER] {command}\n")
+                out = doTask(command)
+                text_widget.insert(tk.END, f"[APOLLO] {out}\n")
+                speak(out, "Male")
+            else:
+                afkCounter += 1
         if "apollo" in command:
-            speak("How may I help you?", "Male")
-            text_widget.insert(tk.END, "[APOLLO] How may I help you?\n")
-            text_widget.see(tk.END)
+            speak(f"What's up, {title}?", "Male")
+            text_widget.insert(tk.END, f"[APOLLO] What's up, {title}?\n")
             Active = True
             afkCounter = 0
         elif afkCounter > 10 and Active:
-            speak("Going to sleep.", "Male")
-            text_widget.insert(tk.END, "[APOLLO] Going to sleep.\n")
-            text_widget.see(tk.END)
             Active = False
             afkCounter = 0
+    speak("Going to sleep.", "Male")
 
 def create_gui():
     root = tk.Tk()
@@ -94,21 +89,41 @@ def create_gui():
         root.after(50, update_gif, (frame_index + 1) % len(gif_frames))
 
     def toggle_listening():
-        global Active, listening_thread
+        global Active, listening_thread, stop_event
         if Active:
             Active = False
+            stop_event.set()
             if listening_thread is not None and listening_thread.is_alive():
                 listening_thread.join()
             speak("Stopped listening.", "Male")
         else:
             Active = True
-            listening_thread = Thread(target=runner, args=(text_widget,))
+            stop_event.clear()
+            listening_thread = Thread(target=runner, args=(stop_event, text_widget))
             listening_thread.start()
             speak("Started listening.", "Male")
 
     gif_label.bind("<Button-1>", lambda event: toggle_listening())
 
     update_gif()
+
+    options = [
+        "Google Chrome",
+        "Mozilla Firefox",
+        "Microsoft Edge",
+        "Opera"
+    ]
+
+    clicked = tk.StringVar()
+    clicked.set(options[0])
+
+    def on_option_change(*args):
+        APOLLO.MainBrowser = clicked.get()
+
+    clicked.trace("w", on_option_change)
+
+    drop = tk.OptionMenu(root, clicked, *options)
+    drop.pack()
 
     root.mainloop()
 
