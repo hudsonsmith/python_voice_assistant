@@ -11,7 +11,9 @@ MainBrowser = "Google Chrome"
 
 shutup.please()
 
-os.environ['OPENAI_API_KEY'] = "SECRET_KEY"
+API_KEY = ""
+
+os.environ['OPENAI_API_KEY'] = API_KEY
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
@@ -205,7 +207,7 @@ def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_lis
                     
                     There will be no need for you to take your screenshots on your own for analysis, they will be provided for you at the beginning of each subtask such as this one.
                                         
-                    Here is a screenshot of the current screen state for reference to create your code with an overlayed dark red grid of coordinates (x,y) in percentages for your reference:
+                    Here is a screenshot of the current screen state for reference to create your code with an overlayed dark red grid of coordinates (x,y) in percentages for your reference. You may only use one of these specific coordinates in the case of actions that involve x,y coordinate inputs:
                     """
     base64_image_gridded = encode_image(commands.screenshot_with_grid())
     APOLLOOut = APOLLOCommander.chat.completions.create(
