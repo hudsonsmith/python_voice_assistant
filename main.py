@@ -44,6 +44,8 @@ def runner(stop_event, text_widget):
         if Active:
             if command != "":
                 text_widget.insert(tk.END, f"[USER] {command}\n")
+                text_widget.insert(tk.END, f"[APOLLO] On it, {title}\n")
+                speak(f"On it, {title}", "Male")
                 out = doTask(command)
                 text_widget.insert(tk.END, f"[APOLLO] {out}\n")
                 speak(out, "Male")
