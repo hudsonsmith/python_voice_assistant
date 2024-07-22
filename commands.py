@@ -115,11 +115,7 @@ def currCpu():
 def currRam():
     return psutil.virtual_memory().percent
 
-def currApps():
-    openApps = ""
-    for process in f.Win32_Process():
-        openApps+= " " + process.Name
-    return openApps
+
 
 def speak(text, gender):
     engine = pyttsx3.init('sapi5')
@@ -129,7 +125,6 @@ def speak(text, gender):
     else:
         i = 0
     engine.setProperty('voice', voices[i].id)
-    print("[APOLLO] " + text)
     engine.say(text)
     engine.runAndWait()
 
@@ -137,12 +132,17 @@ def askQuestion(query):
     speak(query,"Male")
     return getCommand()
 
+
 def webScrape(link):
     r = requests.get(link)
     soup = BeautifulSoup(r.content, 'html.parser')
     s = soup.find('div', class_='entry-content')
-    content = s.find_all('p')
-    return content
+    if s:
+        content = s.find_all('p')
+        text_content = [p.get_text() for p in content]
+        return text_content
+    else:
+        return "Content not found"
 
 def getCommand():
     r = sr.Recognizer()
