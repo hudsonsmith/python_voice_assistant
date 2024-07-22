@@ -12,10 +12,11 @@ import speech_recognition as sr
 
 
 
-f = wmi.WMI()
 
 screenWidth, screenHeight = pyautogui.size()
 currentMouseX, currentMouseY = pyautogui.position()
+
+getTitle = "sir"
 
 def screenSpecs():
     return screenWidth, screenHeight, currentMouseX, currentMouseY
@@ -153,3 +154,6 @@ def getCommand():
         except:
             query = ""
     return query.lower()
+
+def getTitle():
+    return getTitle
