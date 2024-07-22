@@ -44,11 +44,15 @@ def runner(stop_event, text_widget):
         if Active:
             if command != "":
                 text_widget.insert(tk.END, f"[USER] {command}\n")
-                text_widget.insert(tk.END, f"[APOLLO] On it, {title}\n")
+                text_widget.insert(tk.END, f"[APOLLO] On it, {title}.\n")
                 speak(f"On it, {title}", "Male")
-                out = doTask(command)
-                text_widget.insert(tk.END, f"[APOLLO] {out}\n")
-                speak(out, "Male")
+                try:
+                    out = doTask(command)
+                    text_widget.insert(tk.END, f"[APOLLO] {out}\n")
+                    speak(out, "Male")
+                except:
+                    speak("Sorry, I was unable to complete the task.", "Male")
+                    text_widget.insert(tk.END, f"[APOLLO] Sorry, I was unable to complete the task.\n")
             else:
                 afkCounter += 1
         if "apollo" in command:
