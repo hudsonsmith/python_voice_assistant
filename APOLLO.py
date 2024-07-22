@@ -22,7 +22,7 @@ def outputCommands(command):
     APOLLOCommander = OpenAI()
     screen_height = commands.screenHeight
     screen_width = commands.screenWidth
-
+    dash = {"time": currTime(), "cpu": currCpu(), "ram": currRam()}
     Planning_phase = f"""
         You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies designed to assist, advise, and aid users based on their given commands.
         You are familiar with the {OperSys} operating system.
@@ -32,6 +32,14 @@ def outputCommands(command):
         DO NOT Add anything that may be potentially detrimental to the user, such as closing any process/applications, without their explicit command.
         Just so you know, you have the ability to speak to the user. Whenever a task involves giving information to the user, make it spoken unless explicitly stated.
         Do not perform extraneous tasks that are not necessary, for example if the user wants something done in a certain website and that website is already open, there is no need go through opening a new browser and going to the link all over again.
+        Here is a dashboard with information about the computer enviornment: 
+                    
+                    Current time in the format of year, month, day, hour, minute, second, and microsecond: {dash['time']}
+                    
+                    Current cpu usage: {dash['cpu']}
+                    
+                    Current ram usage: {dash['ram']}
+                    
         If there is information required that you do not know, such as the weather or news, please use web scraping (you have web scraping capabilities) instead of actual google searches whenever possible.
         The user's preferred browser is {MainBrowser}, specify using this unless explicitly told otherwise in the command,
         You can also ask questions to the user as subtasks, in case you need specific information that your current knowledge base does not have, such as login credentials or specific inputs the user may want for a task such as the date of a flight ticket. In that same subtask you will also add that the memory needs to be appended with this information.        
@@ -75,7 +83,7 @@ def outputCommands(command):
 
 def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_list, command,
                                memoryStorage):
-    dash = {"time": currTime(), "cpu": currCpu(), "ram": currRam(), "apps": currApps()}
+    dash = {"time": currTime(), "cpu": currCpu(), "ram": currRam()}
     Action_phase = f"""
                     You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies, familiar with the {OperSys} operating system and UI operations. Your goal now is to manipulate a computer screen to complete the task given by the user: "{command}". Here is the implementation plan: {plan_list}. The current subtask is "{taskSub}". Assume that all the subtasks that came prior to this one on the list have already been completed, so do not perform redundant actions.
                     
@@ -86,9 +94,7 @@ def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_lis
                     Current cpu usage: {dash['cpu']}
                     
                     Current ram usage: {dash['ram']}
-                    
-                    Current apps open: {dash['apps']}
-                    
+                                        
                     You can use the mouse and keyboard, along with other computer functions and terminal, using only the following functions:
                     
                     -moveCursor(x, y):
@@ -165,7 +171,6 @@ def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_lis
                         else:
                             i = 0
                         engine.setProperty('voice', voices[i].id)
-                        print("[APOLLO] " + text)
                         engine.say(text)
                         engine.runAndWait()
                     
@@ -226,6 +231,5 @@ def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_lis
         )
     APOLLOOut = APOLLOOut.choices[0].message.content
     APOLLOOut = APOLLOOut.replace("```", "").replace("python", "")
-    print(APOLLOOut)
     exec(APOLLOOut)
     return memoryStorage
