@@ -4,11 +4,13 @@ from commands import *
 import tkinter as tk
 from threading import Thread, Event
 import pyttsx3
+import speech_recognition as sr
 
 Active = False
 afkCounter = 0
-title = "sir"
 stop_event = Event()
+listening_thread = None
+
 
 def speak(text, gender):
     engine = pyttsx3.init('sapi5')
@@ -21,30 +23,33 @@ def speak(text, gender):
     engine.say(text)
     engine.runAndWait()
 
+
 def getCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
+        print("Listening...")
         audio = r.listen(source)
         try:
             query = r.recognize_google(audio, language="en-US")
+            print(f"User said: {query}")
         except:
             query = ""
     return query.lower()
 
+
 def doTask(command):
     return APOLLO.outputCommands(command)
+
 
 def runner(stop_event, text_widget):
     text_widget.insert(tk.END, "[APOLLO] Apollo is ready for service.\n")
     global Active, afkCounter
-    Active = False
     while not stop_event.is_set():
         command = getCommand()
-        text_widget.insert(tk.END, f"[USER] {command}\n")
         if Active:
             if command != "":
                 text_widget.insert(tk.END, f"[USER] {command}\n")
-                text_widget.insert(tk.END, f"[APOLLO] On it, {title}.\n")
+                text_widget.insert(tk.END, f"[APOLLO] On it, {getTitle()}.\n")
                 speak(f"On it, {title}", "Male")
                 try:
                     out = doTask(command)
@@ -56,14 +61,15 @@ def runner(stop_event, text_widget):
             else:
                 afkCounter += 1
         if "apollo" in command:
-            speak(f"What's up, {title}?", "Male")
-            text_widget.insert(tk.END, f"[APOLLO] What's up, {title}?\n")
+            speak(f"What's up, {getTitle()}?", "Male")
+            text_widget.insert(tk.END, f"[APOLLO] What's up, {getTitle()}?\n")
             Active = True
             afkCounter = 0
-        elif afkCounter > 10 and Active:
+        elif afkCounter > 3 and Active:
             Active = False
             afkCounter = 0
     speak("Going to sleep.", "Male")
+
 
 def create_gui():
     root = tk.Tk()
@@ -88,6 +94,16 @@ def create_gui():
 
     gif_label = tk.Label(root)
     gif_label.pack()
+
+    label = tk.Label(root, text="Enter your API Key here: ")
+    label.pack()
+    inputtxt = tk.Text(root, height=1, width=20)
+    inputtxt.pack()
+
+    label2 = tk.Label(root, text="Enter your preferred title here: ")
+    label2.pack()
+    inputtxt2 = tk.Text(root, height=1, width=20)
+    inputtxt2.pack()
 
     def update_gif(frame_index=0):
         frame = gif_frames[frame_index]
@@ -128,10 +144,19 @@ def create_gui():
 
     clicked.trace("w", on_option_change)
 
+    def on_entered(*args):
+        APOLLO.API_KEY = inputtxt.get("1.0", "end-1c")
+
+    def on_entered_two(*args):
+        APOLLO.getTitle = inputtxt.get("1.0", "end-1c")
+
+    inputtxt.bind('<Return>', on_entered)
+    inputtxt2.bind("<Return>",on_entered_two())
     drop = tk.OptionMenu(root, clicked, *options)
     drop.pack()
 
     root.mainloop()
+
 
 if __name__ == "__main__":
     create_gui()
