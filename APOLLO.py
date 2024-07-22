@@ -11,7 +11,7 @@ MainBrowser = "Google Chrome"
 
 shutup.please()
 
-os.environ['OPENAI_API_KEY'] = "KEY"
+os.environ['OPENAI_API_KEY'] = "SECRET_KEY"
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
@@ -32,6 +32,7 @@ def outputCommands(command):
         DO NOT Add anything that may be potentially detrimental to the user, such as closing any process/applications, without their explicit command.
         Just so you know, you have the ability to speak to the user. Whenever a task involves giving information to the user, make it spoken unless explicitly stated.
         Do not perform extraneous tasks that are not necessary, for example if the user wants something done in a certain website and that website is already open, there is no need go through opening a new browser and going to the link all over again.
+        Be extremely verbose and descriptive in your description, and make sure that no tasks are redundant. Remember that the tasks are occuring in chronological order, and for example to complete the third task you would not need to redo the first and second tasks again before completing it.
         Here is a dashboard with information about the computer enviornment: 
                     
                     Current time in the format of year, month, day, hour, minute, second, and microsecond: {dash['time']}
