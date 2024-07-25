@@ -7,7 +7,6 @@ import pyttsx3
 import speech_recognition as sr
 
 Active = False
-afkCounter = 0
 stop_event = Event()
 listening_thread = None
 
@@ -27,11 +26,9 @@ def speak(text, gender):
 def getCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        print("Listening...")
         audio = r.listen(source)
         try:
             query = r.recognize_google(audio, language="en-US")
-            print(f"User said: {query}")
         except:
             query = ""
     return query.lower()
@@ -42,15 +39,16 @@ def doTask(command):
 
 
 def runner(stop_event, text_widget):
-    text_widget.insert(tk.END, "[APOLLO] Apollo is ready for service.\n")
-    global Active, afkCounter
+    text_widget.insert(tk.END, "[APOLLO] Started Listening.\n")
+    isActive = False
+    afkCounter = 0
     while not stop_event.is_set():
         command = getCommand()
-        if Active:
+        if isActive:
             if command != "":
                 text_widget.insert(tk.END, f"[USER] {command}\n")
                 text_widget.insert(tk.END, f"[APOLLO] On it, {getTitle()}.\n")
-                speak(f"On it, {title}", "Male")
+                speak(f"On it, {getTitle()}", "Male")
                 try:
                     out = doTask(command)
                     text_widget.insert(tk.END, f"[APOLLO] {out}\n")
@@ -63,12 +61,14 @@ def runner(stop_event, text_widget):
         if "apollo" in command:
             speak(f"What's up, {getTitle()}?", "Male")
             text_widget.insert(tk.END, f"[APOLLO] What's up, {getTitle()}?\n")
-            Active = True
+            isActive = True
             afkCounter = 0
-        elif afkCounter > 3 and Active:
-            Active = False
+        elif afkCounter > 3 and isActive:
+            isActive = False
             afkCounter = 0
-    speak("Going to sleep.", "Male")
+        if not Active:
+            text_widget.insert(tk.END, "[APOLLO] Stopped Listening.\n")
+            break
 
 
 def create_gui():
