@@ -43,7 +43,7 @@ def outputCommands(command):
                     
                     Current ram usage: {dash['ram']}
                     
-        If there is information required that you do not know, such as the weather or news, please use web scraping (you have web scraping capabilities) instead of actual google searches whenever possible.
+        If there is information required that you do not know please use web scraping (you have web scraping capabilities) instead of actual google searches whenever possible.
         The user's preferred browser is {MainBrowser}, specify using this unless explicitly told otherwise in the command,
         You can also ask questions to the user as subtasks, in case you need specific information that your current knowledge base does not have, such as login credentials or specific inputs the user may want for a task such as the date of a flight ticket. In that same subtask you will also add that the memory needs to be appended with this information.        
         Here is a screenshot of the existing screen state, reference your planning off of the current screen state as context if needed:
@@ -75,7 +75,6 @@ def outputCommands(command):
     subtasks = []
     exec(APOLLOOut)
     plan_list = "\n".join(subtasks)
-    print(plan_list)
     memoryStorage = ""
     for task in subtasks:
         memoryStorage += execute_task(task, APOLLOCommander, screen_width, screen_height, plan_list,
@@ -128,6 +127,7 @@ def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_lis
                     -wait(seconds):
                         time.sleep(seconds)
                     
+                    #Very useful, as it allows you to run terminal commands,
                     -subprocessTwo(lis):
                         process = subprocess.Popen(lis, shell=True)
                         process.wait()
@@ -205,9 +205,15 @@ def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_lis
 
                     Do not time your mouse movements, ect. but make it instantaneous as possible. Use the screenshot at the bottom to precisely put the variables for mouse x and y movements.
                     
+                    If you feel like the plan needs to be changed as it does not fit the current state, please do the following code:
+                    
+                    subtasks.clear()
+                    #Add however many subtasks you deem nessacary (make it minimal)
+                    subtask.append("Details of the new subtask)
+                    
                     There will be no need for you to take your screenshots on your own for analysis, they will be provided for you at the beginning of each subtask such as this one.
                                         
-                    Here is a screenshot of the current screen state for reference to create your code with an overlayed dark red grid of coordinates (x,y) in percentages for your reference. You may only use one of these specific coordinates in the case of actions that involve x,y coordinate inputs:
+                    Here is a screenshot of the current screen state for reference to create your code with an overlayed dark red grid of coordinates (x,y) in percentages for your reference. You may only use one of these specific coordinates in the case of actions that involve x,y coordinate inputs, you may not use ones that you do not see in the red overlaid grid:
                     """
     base64_image_gridded = encode_image(commands.screenshot_with_grid())
     APOLLOOut = APOLLOCommander.chat.completions.create(
