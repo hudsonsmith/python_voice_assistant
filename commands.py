@@ -16,7 +16,6 @@ import speech_recognition as sr
 screenWidth, screenHeight = pyautogui.size()
 currentMouseX, currentMouseY = pyautogui.position()
 
-getTitle = "sir"
 
 def screenSpecs():
     return screenWidth, screenHeight, currentMouseX, currentMouseY
@@ -49,7 +48,7 @@ def scroll(clicks):
 def wait(seconds):
     time.sleep(seconds)
 
-def subprocessTwo(lis):
+def useSubprocess(lis):
     process = subprocess.Popen(lis, shell=True)
     process.wait()
 
@@ -133,18 +132,6 @@ def askQuestion(query):
     speak(query,"Male")
     return getCommand()
 
-
-def webScrape(link):
-    r = requests.get(link)
-    soup = BeautifulSoup(r.content, 'html.parser')
-    s = soup.find('div', class_='entry-content')
-    if s:
-        content = s.find_all('p')
-        text_content = [p.get_text() for p in content]
-        return text_content
-    else:
-        return "Content not found"
-
 def getCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -155,5 +142,3 @@ def getCommand():
             query = ""
     return query.lower()
 
-def getTitle():
-    return getTitle
