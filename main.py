@@ -37,7 +37,6 @@ def getCommand():
 def doTask(command):
     return APOLLO.outputCommands(command)
 
-
 def runner(stop_event, text_widget):
     text_widget.insert(tk.END, "[APOLLO] Started Listening.\n")
     isActive = False
@@ -47,8 +46,8 @@ def runner(stop_event, text_widget):
         if isActive:
             if command != "":
                 text_widget.insert(tk.END, f"[USER] {command}\n")
-                text_widget.insert(tk.END, f"[APOLLO] On it, {getTitle()}.\n")
-                speak(f"On it, {getTitle()}", "Male")
+                text_widget.insert(tk.END, f"[APOLLO] On it, {APOLLO.getTitle}.\n")
+                speak(f"On it, {APOLLO.getTitle}", "Male")
                 try:
                     out = doTask(command)
                     text_widget.insert(tk.END, f"[APOLLO] {out}\n")
@@ -59,8 +58,8 @@ def runner(stop_event, text_widget):
             else:
                 afkCounter += 1
         if "apollo" in command:
-            speak(f"What's up, {getTitle()}?", "Male")
-            text_widget.insert(tk.END, f"[APOLLO] What's up, {getTitle()}?\n")
+            speak(f"What's up, {APOLLO.getTitle}?", "Male")
+            text_widget.insert(tk.END, f"[APOLLO] What's up, {APOLLO.getTitle}?\n")
             isActive = True
             afkCounter = 0
         elif afkCounter > 3 and isActive:
@@ -148,10 +147,10 @@ def create_gui():
         APOLLO.API_KEY = inputtxt.get("1.0", "end-1c")
 
     def on_entered_two(*args):
-        APOLLO.getTitle = inputtxt.get("1.0", "end-1c")
+        APOLLO.getTitle = inputtxt2.get("1.0", "end-1c")
 
     inputtxt.bind('<Return>', on_entered)
-    inputtxt2.bind("<Return>",on_entered_two())
+    inputtxt2.bind("<Return>",on_entered_two)
     drop = tk.OptionMenu(root, clicked, *options)
     drop.pack()
 
