@@ -299,13 +299,15 @@ def outputCommands(command):
             -Do not add any comments to the operation code, or add on any elements that do not follow the given format exactly.
             -Do not perform redundant actions, for example if the current screen already has a browser or relavant website open there is no need to perform the actions to do it again 
             -Immediately use taskDone() when the overall task is done, do not perform any extra actions that are not implicit in the command
+                        
         Remember that the overall task at hand is "{command}", please give the detailed JSON output of the next action you must take, in the format described above with no additional commentary, based on the state of the existing screen image:
         
         
                            """
 
-
-        base64_image = encode_image(commands.screenshot())
+        path, text_list = commands.screenshotOcr()
+        base64_image = encode_image(path)
+        OCR_phase = f"Here is a list of the text and corresponding centerpoint coordinates of text retrieved from using OCR on the screen, use it for reference in tasks that require precise x/y coordinates: {text_list}."
         APOLLOOut = APOLLOCommander.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -321,6 +323,11 @@ def outputCommands(command):
                             "image_url": {
                                 "url": f"data:image/jpeg;base64,{base64_image}"
                             }
+                        },
+                        {
+                            "type": "text",
+                            "text": OCR_phase
+
                         }
                     ]
                 }
