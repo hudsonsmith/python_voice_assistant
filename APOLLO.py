@@ -274,15 +274,18 @@ def outputCommands(command):
            
            doNothing()
         
-        
+           taskDone()
+                    
+                #Use this function if the overall task is completed
+                
         
            Please return the next following function necessary to successfully complete the task in JSON format:""" + """
         {
           "observation": "your observation of the current screen state and its relation to your previous tasks and overall command (for example, you may observe that you were unsuccessful in clicking a login button the first time). You can also observe if the overall command has been completed.",
-          "plan": " A multi-step future plan that does not involve low-level operations (start from current screen and action, DON’T include previous actions); steps indexed by numbers. Be sure to pretend that you don’t know the future interface and actions, and don’t know the elements not existing on the current screen.",
-          "action": "describe The specific immediate action that needs to be taken, ex: Click the ’Search’ button to proceed with the search based on the entered criteria. This button is located towards the right side of the screen.",
-          "speak": "Say something to the user if relavent to the user's command or you want to give a status report (optional, if not needed just keep it blank)",
-          "operation": "the specific function you want to undertake to get closer to the overall command, ex: use_searchBar(“Shoes on sale”). If the overall command has been completed and there is nothing more to do, please enter taskDone = True instead."
+          "plan": " A multi-step future plan that does not involve low-level operations (start from current screen and action, DON’T include previous actions); steps indexed by numbers. Be sure to pretend that you don’t know the future interface and actions, and don’t know the elements not existing on the current screen. If the overall task is complete, make your plan to perform the taskDone function. Make the individual steps detailed, but try to keep the number of steps to an absolute minimum required.",
+          "action": "describe The specific immediate action that needs to be taken, ex: Click the ’Search’ button to proceed with the search based on the entered criteria. This button is located towards the right side of the screen.If the overall task is complete, make your action to perform the taskDone function.",
+          "speak": "Say something to the user if relevant to the user's command (E: they ask you for information about their screen or something you already know) or you want to give a status report (optional, if not needed just keep it blank)",
+          "operation": "the specific function you want to undertake to get closer to the overall command, ex: use_searchBar(“Shoes on sale”). If the overall command has been completed and there is nothing more to do, please perform taskDone()."
         }
         
         """ + f"""
@@ -292,8 +295,10 @@ def outputCommands(command):
             -Use {MainBrowser} as your default web browser unless the command states otherwise
             -Use open_application whenever possible to open an application rather than using taskbar
             -Use use_searchBar whenever possible to search on a browser's search bar rather than manually clicking and writing
-            -If your task only involves speaking, you can use doNothing as a placeholder in the action portion
-                
+            -If your task only involves speaking, you can use doNothing as a placeholder in the action portion (For example, if it is a question about something on their scre
+            -Do not add any comments to the operation code, or add on any elements that do not follow the given format exactly.
+            -Do not perform redundant actions, for example if the current screen already has a browser or relavant website open there is no need to perform the actions to do it again 
+            -Immediately use taskDone() when the overall task is done, do not perform any extra actions that are not implicit in the command
         Remember that the overall task at hand is "{command}", please give the detailed JSON output of the next action you must take, in the format described above with no additional commentary, based on the state of the existing screen image:
         
         
@@ -321,7 +326,7 @@ def outputCommands(command):
                 }
             ],
             max_tokens=1024,
-            temperature=0
+            temperature=1
         )
         APOLLOOut = APOLLOOut.choices[0].message.content.replace("```", "").replace("json", "")
         print(APOLLOOut)
