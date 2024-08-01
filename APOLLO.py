@@ -5,6 +5,7 @@ import os
 import commands
 from commands import *
 import platform
+import json
 
 OperSys = platform.system()
 MainBrowser = "Google Chrome"
@@ -13,7 +14,7 @@ shutup.please()
 
 API_KEY = ""
 
-getTitle = ""
+getTitle = "sir"
 
 os.environ['OPENAI_API_KEY'] = API_KEY
 def encode_image(image_path):
@@ -26,132 +27,276 @@ def outputCommands(command):
     APOLLOCommander = OpenAI()
     screen_height = commands.screenHeight
     screen_width = commands.screenWidth
-    dash = {"time": currTime(), "cpu": currCpu(), "ram": currRam()}
-    Planning_phase = f"""
-        You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies designed to assist, advise, and aid users based on their given commands. You can see a computer screen with height: {screen_height}, width: {screen_width}, and the current task is "{command}". 
-        
-        Here is a dashboard with extra information about the computer enviornment: 
-                    
-                    Current time in the format of year, month, day, hour, minute, second, and microsecond: {dash['time']}
-                    
-                    Current cpu usage: {dash['cpu']}
-                    
-                    Current ram usage: {dash['ram']}
-        
-        You need to return a plan to accomplish this goal. Please output your plan informat of concise and essential subtasks, e.g. my task is to search the web for " What’s the deal with the Wheat Field Circle?", the steps to disassemble this task are:
-
-            subtasks.append(“Open web browser.”)
-            subtasks.append(“Search in your browser for “What’ s the deal with the Wheat Field Circle?””)
-            subtasks.append(“Open the first search result.”)
-            subtasks.append(“Browse the content of the page.”)
-            subtasks.append(“Answer the question "What’s the deal with the Wheat Field Circle?" according to the content.”)
-        
-        Another example, my task is "Write a brief paragraph about artificial intelligence in a notebook", the steps to disassemble this task are:
-        
-            subtasks.append(“Open Notebook.”)
-            subtasks.append(“Write a brief paragraph about AI in the notebook.”)
-            
-        As a default browser use  {MainBrowser}, if relevant.
-            
-        Now, your current task is "{command}", give the disassembly steps of the task, in the format described above with no additional commentary, based on the state of the existing screen image:
-
-    """
-    base64_image = encode_image(commands.screenshot())
-    APOLLOOut = APOLLOCommander.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": Planning_phase
-                    },
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/jpeg;base64,{base64_image}"
-                        }
-                    }
-                ]
-            }
-        ],
-        max_tokens=1024
-    )
-    APOLLOOut = APOLLOOut.choices[0].message.content
-    APOLLOOut = APOLLOOut.replace("```", "").replace("python", "")
-    subtasks = []
-    exec(APOLLOOut)
-    plan_list = "\n".join(subtasks)
-    print(plan_list)
     memoryStorage = ""
-    for task in subtasks:
-        memoryStorage += execute_task(task, APOLLOCommander, screen_width, screen_height, plan_list,
-                                                    command, memoryStorage)
-    return "Task completed."
+    taskDone = False
+    while taskDone == False:
+        Action_phase = f"""
+       You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You’re very familiar with the {OperSys} operating system, and terminal and UI operations. Now you need to use the {OperSys} operating system to complete a mission. Your goal now is to manipulate a computer screen with height: {screen_height} and width: {screen_width}. The overall mission is: "{command}". 
+    
+    
+        Here are the previous actions you have taken:
+        
+        
+        {memoryStorage}
+        
+        
+        You can use the mouse and keyboard, the optional functions are:
+        
+        
+           moveCursor(x, y)
+        
+        
+               # Example of moveCursor(x, y)
+               # Move the mouse cursor to the position (100, 200) on the screen
+               moveCursor(100, 200)
+        
+        
+           rightClick()
+        
+        
+               # Example of rightClick()
+               # Right-click at the current mouse cursor position
+               rightClick()
+        
+        
+           leftClick()
+        
+        
+               # Example of leftClick()
+               # Left-click at the current mouse cursor position
+               leftClick()
+        
+        
+           write(text):
+        
+        
+               # Example of write(text)
+               # Type the text "Hello, World!"
+               write("Hello, World!")
+        
+        
+           drag(x,y)
+        
+        
+               # Example of drag(x, y)
+               # Drag the mouse cursor from the current position to (300, 400)
+               drag(300, 400)
+        
+        
+           press(key)
+        
+        
+               # Example of press(key)
+               # Press the "win" key
+               press("win")
+        
+        
+           scroll(clicks)
+        
+        
+               # Examples of scroll(clicks)
+               # Scroll up 10 clicks
+               scroll(10)
+               # Scroll down 5 clicks
+               scroll(-5)
+        
+        
+           wait(seconds)
+        
+        
+               # Example of wait(seconds)
+               # Wait for 5 seconds
+               wait(5)
+        
+        
+           useSubprocess(lis)
+        
+        
+               # Examples of useSubprocess(lis)
+        
+        
+               # System Information
+               # Get system information
+               useSubprocess(["uname", "-a"])  # 'uname' gets system info, no replacement needed
+        
+        
+               # Get current user
+               useSubprocess(["whoami"])  # 'whoami' gets current user, no replacement needed
+        
+        
+               # File and Directory Operations
+               # List files in a directory
+               useSubprocess(["ls", "-l"])  # 'ls' lists files, no replacement needed
+        
+        
+               # Make a new directory
+               useSubprocess(["mkdir", "new_folder"])  # Replace 'new_folder' with the desired directory name
+        
+        
+               # Copy a file
+               useSubprocess(["cp", "source.txt", "destination.txt"])  # Replace 'source.txt' and 'destination.txt' with actual file names
+        
+        
+               # Remove a file
+               useSubprocess(["rm", "file.txt"])  # Replace 'file.txt' with the actual file name to remove
+        
+        
+               # Network Operations
+               # Ping a server
+               useSubprocess(["ping", "-c", "4", "google.com"])  # Replace 'google.com' with the actual server address
+        
+        
+               # Check network interfaces
+               useSubprocess(["ifconfig"])  # 'ifconfig' checks network interfaces, no replacement needed
+        
+        
+               # Package Management (Linux)
+               # Update package lists (Debian-based systems)
+               useSubprocess(["sudo", "apt-get", "update"])  # 'update' command for apt-get, no replacement needed
+        
+        
+               # Install a package (Debian-based systems)
+               useSubprocess(["sudo", "apt-get", "install", "-y", "curl"])  # Replace 'curl' with the actual package name
+        
+        
+               # Remove a package (Debian-based systems)
+               useSubprocess(["sudo", "apt-get", "remove", "-y", "curl"])  # Replace 'curl' with the actual package name
+        
+        
+               # System Management
+               # Check disk usage
+               useSubprocess(["df", "-h"])  # 'df' checks disk usage, no replacement needed
+        
+        
+               # Check memory usage
+               useSubprocess(["free", "-h"])  # 'free' checks memory usage, no replacement needed
+        
+        
+               # Reboot the system
+               useSubprocess(["sudo", "reboot"])  # 'reboot' command, no replacement needed
+        
+        
+               # Miscellaneous
+               # Open a file with the default application (Linux)
+               useSubprocess(["xdg-open", "document.pdf"])  # Replace 'document.pdf' with the actual file name
+        
+        
+               # Show the current date and time
+               useSubprocess(["date"])  # 'date' command, no replacement needed
+        
+        
+               # Show the current directory
+               useSubprocess(["pwd"])  # 'pwd' shows current directory, no replacement needed
+        
+        
+               # Display running processes
+               useSubprocess(["ps", "aux"])  # 'ps' shows running processes, no replacement needed
+        
+        
+               # Kill a process by PID
+               useSubprocess(["kill", "1234"])  # Replace '1234' with the actual PID
+        
+        
+               # Search for a pattern in files
+               useSubprocess(["grep", "-r", "example", "."])  # Replace 'example' with the actual search pattern
+        
+        
+               # Compress a directory
+               useSubprocess(["tar", "-czvf", "my_folder.tar.gz", "my_folder"])  # Replace 'my_folder.tar.gz' and 'my_folder' with actual names
+        
+        
+               # Additional Useful Commands
+               # Show disk partition information
+               useSubprocess(["lsblk"])  # 'lsblk' shows disk partitions, no replacement needed
+        
+        
+               # Check for open ports
+               useSubprocess(["netstat", "-tuln"])  # 'netstat' checks open ports, no replacement needed
+        
+        
+               # Change file permissions
+               useSubprocess(["chmod", "755", "example.sh"])  # Replace '755' with actual permissions and 'example.sh' with the actual file name
+        
+        
+               # Show all environment variables
+               useSubprocess(["printenv"])  # 'printenv' shows environment variables, no replacement needed
+        
+        
+               # Create an empty file
+               useSubprocess(["touch", "newfile.txt"])  # Replace 'newfile.txt' with the desired file name
+        
+        
+            *Note: to actually gain any information from this, you must save the returned value to a variable and add it to your memory.  
+        
+        
+           keyDown(key)
+        
+        
+               # Example of keyDown(key)
+               # Hold down the "shift" key
+               keyDown("shift")
+        
+        
+           keyUp(key)
+        
+        
+               # Example of keyUp(key)
+               # Release the "shift" key
+               keyUp("shift")
+        
+        
+           hotkey(tup)
+        
+        
+               # Example of hotkey(tup)
+               # Press the "ctrl" + "c" hotkey combination
+               hotkey("ctrl", "c")
+        
+        
+           doubleClick()
+        
+        
+               # Example of doubleClick()
+               # Double-click at the current mouse cursor position
+               doubleClick()
+        
+        
+           open_application(app_name)
+        
+        
+               # Example of open_application(app_name)
+               # Open the given application
+               open_application("Google Chrome")
+        
+        
+           use_searchBar(query)
+        
+        
+        
+           Please return the next following function necessary to successfully complete the task in JSON format:""" + """
+        {
+          "observation": "your observation of the current screen state and its relation to your previous tasks and overall command (for example, you may observe that you were unsuccessful in clicking a login button the first time). You can also observe if the overall command has been completed.",
+          "plan": " A multi-step future plan that does not involve low-level operations (start from current screen and action, DON’T include previous actions); steps indexed by numbers. Be sure to pretend that you don’t know the future interface and actions, and don’t know the elements not existing on the current screen.",
+          "action": "describe The specific immediate action that needs to be taken, ex: Click the ’Search’ button to proceed with the search based on the entered criteria. This button is located towards the right side of the screen.",
+          "speak": "Say something to the user (optional, if not needed just keep it blank)",
+          "operation": "the specific function you want to undertake to get closer to the overall command, ex: use_searchBar(“Shoes on sale”). If the overall command has been completed and there is nothing more to do, please enter taskDone = True instead."
+        }
+        
+        """ + f"""
+        
+        Note:
+        
+            -Use {MainBrowser} as your default web browser unless the command states otherwise
+            -Use open_application whenever possible to open an application rather than using taskbar
+        
+        Remember that the overall task at hand is "{command}", please give the detailed JSON output of the next action you must take, in the format described above with no additional commentary, based on the state of the existing screen image:
+        
+        
+                           """
 
 
-def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_list, command,
-                               memoryStorage):
-    dash = {"time": currTime(), "cpu": currCpu(), "ram": currRam()}
-    Action_phase = f"""
-    You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You’re very familiar with the {OperSys} operating system, and terminal and UI operations. Now you need to use the {OperSys} operating system to complete a mission. Your goal now is to manipulate a computer screen with height: {screen_height} and width: {screen_width}. The overall mission is: "{command }". We have developed an implementation plan for this overall mission: {plan_list}. The current subtask is "{taskSub}". Assume that all tasks in the list prior to this one have been completed, and plan your next steps accordingly. You can use the mouse and keyboard, the optional functions are: 
-
-    moveCursor(x, y)
-    
-    rightClick()
-    
-    leftClick()
-    
-    write(text):
-    
-    drag(x,y)
-    
-    press(key)
-    
-    scroll(clicks)
-    
-    wait(seconds)
-    
-    useSubprocess(lis)
-    
-    keyDown(key)
-      
-    keyUp(key)
-    
-    hotkey(tup)
-    
-    doubleClick()
-    
-    open_application(app_name)
-      
-    use_searchBar(query)
-      
-    askQuestion(query)
-    
-    minimizeWindow()
-      
-    speak(text, gender)
-    
-    Where the mouse position is relative to the top-left corner of the screen. If the input is required in x,y format, please give them in the format of percentages between 0 - 100. As a default browser use  {MainBrowser}, use open_application to open an app at all times, and use_search bar to perform a search task. Above each line of code you should add a comment explaining your thought process based on the screen enviornment and what needs to be done to satisfy the subtask. Here is your current memory, if anything: {memoryStorage}. If you wish to add anything to your memory to store for future use, such as a description of the current screen state if that is related to the user's request, please use the function memoryStorage += "whatever you want to add". If your subtask involves asking a question to the user, use a variable to store the user's textual input and use the askQuestion function to ask it. For example, to store it in a variable called pass, do pass = askQuestion("Your question"). Finally, you will append this information to your memory using the memoryStorage += "whatever info you retrieved" function. 
-    
-    Here is a dashboard with extra information about the computer enviornment:
-    
-    
-    Current time in the format of year, month, day, hour, minute, second, and microsecond: {dash['time']}
-    
-    
-    Current cpu usage: {dash['cpu']}
-    
-    
-    Current ram usage: {dash['ram']}
-    
-    
-    Please make output execution actions, please format them in pythonic script. You cannot use any external libraries or imports, but you can use other basic python features such as for loops. The current subtask is "{taskSub}", please give the detailed next actions, in the format described above with no additional commentary, based on the state of the existing screen image:
-
-                    """
-    base64_image_gridded = encode_image(commands.screenshot_with_grid())
-    APOLLOOut = APOLLOCommander.chat.completions.create(
+        base64_image = encode_image(commands.screenshot())
+        APOLLOOut = APOLLOCommander.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {
@@ -164,7 +309,7 @@ def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_lis
                         {
                             "type": "image_url",
                             "image_url": {
-                                "url": f"data:image/jpeg;base64,{base64_image_gridded}"
+                                "url": f"data:image/jpeg;base64,{base64_image}"
                             }
                         }
                     ]
@@ -173,8 +318,14 @@ def execute_task(taskSub, APOLLOCommander, screen_width, screen_height, plan_lis
             max_tokens=1024,
             temperature=0
         )
-    APOLLOOut = APOLLOOut.choices[0].message.content
-    APOLLOOut = APOLLOOut.replace("```", "").replace("python", "")
-    print(APOLLOOut)
-    exec(APOLLOOut)
-    return memoryStorage
+        APOLLOOut = APOLLOOut.choices[0].message.content.replace("```", "").replace("json", "")
+        print(APOLLOOut)
+        memoryStorage += APOLLOOut
+        APOLLOOut = json.loads(APOLLOOut)
+        print(memoryStorage)
+        exec(APOLLOOut["operation"])
+    return "Task completed."
+
+
+
+
