@@ -43,7 +43,7 @@ def outputCommands(command):
         You can use the mouse and keyboard, the optional functions are:
         
         
-           moveCursor(x, y)
+           moveCursor()
         
         
                # Example of moveCursor(x, y)
@@ -51,20 +51,20 @@ def outputCommands(command):
                moveCursor(100, 200)
         
         
-           rightClick()
+           rightClick(x, y)
         
         
                # Example of rightClick()
-               # Right-click at the current mouse cursor position
-               rightClick()
+               # Move the mouse cursor to the position (100, 200) on the screen and right click
+               rightClick(100, 200)
         
         
-           leftClick()
+           leftClick(x, y)
         
         
                # Example of leftClick()
-               # Left-click at the current mouse cursor position
-               leftClick()
+               # Move the mouse cursor to the position (100, 200) on the screen and left click
+               leftClick(100, 200)
         
         
            write(text):
@@ -270,6 +270,9 @@ def outputCommands(command):
         
         
            use_searchBar(query)
+           
+           
+           doNothing()
         
         
         
@@ -278,7 +281,7 @@ def outputCommands(command):
           "observation": "your observation of the current screen state and its relation to your previous tasks and overall command (for example, you may observe that you were unsuccessful in clicking a login button the first time). You can also observe if the overall command has been completed.",
           "plan": " A multi-step future plan that does not involve low-level operations (start from current screen and action, DON’T include previous actions); steps indexed by numbers. Be sure to pretend that you don’t know the future interface and actions, and don’t know the elements not existing on the current screen.",
           "action": "describe The specific immediate action that needs to be taken, ex: Click the ’Search’ button to proceed with the search based on the entered criteria. This button is located towards the right side of the screen.",
-          "speak": "Say something to the user (optional, if not needed just keep it blank)",
+          "speak": "Say something to the user if relavent to the user's command or you want to give a status report (optional, if not needed just keep it blank)",
           "operation": "the specific function you want to undertake to get closer to the overall command, ex: use_searchBar(“Shoes on sale”). If the overall command has been completed and there is nothing more to do, please enter taskDone = True instead."
         }
         
@@ -288,7 +291,9 @@ def outputCommands(command):
         
             -Use {MainBrowser} as your default web browser unless the command states otherwise
             -Use open_application whenever possible to open an application rather than using taskbar
-        
+            -Use use_searchBar whenever possible to search on a browser's search bar rather than manually clicking and writing
+            -If your task only involves speaking, you can use doNothing as a placeholder in the action portion
+                
         Remember that the overall task at hand is "{command}", please give the detailed JSON output of the next action you must take, in the format described above with no additional commentary, based on the state of the existing screen image:
         
         
@@ -322,7 +327,7 @@ def outputCommands(command):
         print(APOLLOOut)
         memoryStorage += APOLLOOut
         APOLLOOut = json.loads(APOLLOOut)
-        print(memoryStorage)
+        speak(APOLLOOut["speak"],"Male")
         exec(APOLLOOut["operation"])
     return "Task completed."
 
