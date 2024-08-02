@@ -290,19 +290,7 @@ def outputCommands(command):
           "operation": "the specific function you want to undertake to get closer to the overall command, ex: use_searchBar(“Shoes on sale”). If the overall command has been completed and there is nothing more to do, please perform taskDone()."
         }
         
-        """ + f"""
-        
-        Note:
-        
-            -Use {MainBrowser} as your default web browser unless the command states otherwise
-            -To open ANY application, use open_application() function
-            -Use use_searchBar whenever possible to search on a browser's search bar rather than manually clicking and writing
-            -If your task only involves speaking, you can use doNothing as a placeholder in the action portion (For example, if it is a question about something on their scre
-            -Do not add any comments to the operation code, or add on any elements that do not follow the given format exactly.
-            -Do not perform redundant actions, for example if the current screen already has a browser or relavant website open there is no need to perform the actions to do it again 
-            -Immediately use taskDone() when the overall task is done, do not perform any extra actions that are not implicit in the command
-            -If trying the same thing twice doesn't work, try a different action
-            
+        """ + f"""      
         Remember that the overall task at hand is "{command}", please give the detailed JSON output of the next action you must take, in the format described above with no additional commentary, based on the state of the existing screen image:
         
         
@@ -310,7 +298,20 @@ def outputCommands(command):
 
         path, text_list = commands.screenshotOcr()
         base64_image = encode_image(path)
-        OCR_phase = f"Here is a list of the text and corresponding centerpoint coordinates of text retrieved from using OCR on the screen, use it for reference in tasks that require precise x/y coordinates: {text_list}. These are not the only coordinates you can click, they are just there for reference."
+        OCR_phase = f"""Here is a list of the text and corresponding centerpoint coordinates of text retrieved from using OCR on the screen, use it for reference in tasks that require precise x/y coordinates: {text_list}. These are not the only coordinates you can click, they are just there for reference.
+        
+        Note:
+        
+            -Use {MainBrowser} as your default web browser unless the command states otherwise
+            -To open ANY application, use open_application() function, do not press win and type it manually
+            -To use search bar in a browser, you MUST use the use_searchBar() function, do not click on it and write manually
+            -If your task only involves speaking, you can use doNothing as a placeholder in the action portion (For example, if it is a question about something on their scre
+            -Do not add any comments to the operation code, or add on any elements that do not follow the given format exactly.
+            -Do not perform redundant actions, for example if the current screen already has a browser or relavant website open there is no need to perform the actions to do it again 
+            -Immediately use taskDone() when the overall task is done, do not perform any extra actions that are not implicit in the command
+            -If trying the same thing twice doesn't work, try a different action
+        
+        """
         APOLLOOut = APOLLOCommander.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
