@@ -27,11 +27,13 @@ def outputCommands(command):
     APOLLOCommander = OpenAI()
     screen_height = commands.screenHeight
     screen_width = commands.screenWidth
+    cursor_x = commands.currentMouseX
+    cursor_y = commands.currentMouseY
     memoryStorage = ""
     taskDone = False
     while taskDone == False:
         Action_phase = f"""
-       You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You’re very familiar with the {OperSys} operating system, and terminal and UI operations. Now you need to use the {OperSys} operating system to complete a mission. Your goal now is to manipulate a computer screen with height: {screen_height} and width: {screen_width}. The overall mission is: "{command}". 
+       You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You’re very familiar with the {OperSys} operating system, and terminal and UI operations. Now you need to use the {OperSys} operating system to complete a mission. Your goal now is to manipulate a computer screen with height: {screen_height} and width: {screen_width}. Your current mouse position is {cursor_x},{cursor_y}. The overall mission is: "{command}". 
     
     
         Here are the previous actions you have taken:
@@ -71,7 +73,7 @@ def outputCommands(command):
         
         
                # Example of write(text)
-               # Type the text "Hello, World!"
+               # Type the text "Hello, World!" at the current cursor location
                write("Hello, World!")
         
         
@@ -293,13 +295,14 @@ def outputCommands(command):
         Note:
         
             -Use {MainBrowser} as your default web browser unless the command states otherwise
-            -Use open_application whenever possible to open an application rather than using taskbar
+            -To open ANY application, use open_application() function
             -Use use_searchBar whenever possible to search on a browser's search bar rather than manually clicking and writing
             -If your task only involves speaking, you can use doNothing as a placeholder in the action portion (For example, if it is a question about something on their scre
             -Do not add any comments to the operation code, or add on any elements that do not follow the given format exactly.
             -Do not perform redundant actions, for example if the current screen already has a browser or relavant website open there is no need to perform the actions to do it again 
             -Immediately use taskDone() when the overall task is done, do not perform any extra actions that are not implicit in the command
-                        
+            -If trying the same thing twice doesn't work, try a different action
+            
         Remember that the overall task at hand is "{command}", please give the detailed JSON output of the next action you must take, in the format described above with no additional commentary, based on the state of the existing screen image:
         
         
@@ -307,7 +310,7 @@ def outputCommands(command):
 
         path, text_list = commands.screenshotOcr()
         base64_image = encode_image(path)
-        OCR_phase = f"Here is a list of the text and corresponding centerpoint coordinates of text retrieved from using OCR on the screen, use it for reference in tasks that require precise x/y coordinates: {text_list}."
+        OCR_phase = f"Here is a list of the text and corresponding centerpoint coordinates of text retrieved from using OCR on the screen, use it for reference in tasks that require precise x/y coordinates: {text_list}. These are not the only coordinates you can click, they are just there for reference."
         APOLLOOut = APOLLOCommander.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -340,7 +343,7 @@ def outputCommands(command):
         memoryStorage += APOLLOOut
         APOLLOOut = json.loads(APOLLOOut)
         speak(APOLLOOut["speak"],"Male")
-        exec(APOLLOOut["operation"])
+        exec(APOLLOOut["operation"].replace('"', ""))
     return "Task completed."
 
 
