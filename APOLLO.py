@@ -29,17 +29,43 @@ def outputCommands(command):
     screen_width = commands.screenWidth
     cursor_x = commands.currentMouseX
     cursor_y = commands.currentMouseY
+    Completions_phase = f"""
+            You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You have the ability to perform various UI, terminal, and speech tasks in accordance to a user's command. You have access to the user's screen. Your current overall task is {command}. Please concisely, in one sentence, describe the conditions under which this task will be complete.
+
+            """
+    APOLLOOut = APOLLOCommander.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": Completions_phase
+                    },
+                ]
+            }
+        ],
+        max_tokens=1024,
+        temperature=1
+    )
+    completionsRequirements = APOLLOOut.choices[0].message.content
+    print(completionsRequirements)
     memoryStorage = ""
-    taskDone = False
-    while taskDone == False:
+    global tDone
+    tDone = False
+    while tDone == False:
         Action_phase = f"""
-       You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You’re very familiar with the {OperSys} operating system, and terminal and UI operations. Now you need to use the {OperSys} operating system to complete a mission. Your goal now is to manipulate a computer screen with height: {screen_height} and width: {screen_width}. Your current mouse position is {cursor_x},{cursor_y}. The overall mission is: "{command}". 
+        You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You’re very familiar with the {OperSys} operating system, and terminal and UI operations. Now you need to use the {OperSys} operating system to complete a mission. Your goal now is to manipulate a computer screen with height: {screen_height} and width: {screen_width}. Your current mouse position is {cursor_x},{cursor_y}. The overall mission is: "{command}". 
     
     
         Here are the previous actions you have taken:
         
         
         {memoryStorage}
+        
+        
+        (If the past 1-2 actions have been the same thing to no avail, that means the strategy is not working and you need to change it.)
         
         
         You can use the mouse and keyboard, the optional functions are:
@@ -279,7 +305,6 @@ def outputCommands(command):
            taskDone()
                     
                 #Use this function if the overall task is completed
-                
         
            Please return the next following function necessary to successfully complete the task in JSON format:""" + """
         {
@@ -298,19 +323,22 @@ def outputCommands(command):
 
         path, text_list = commands.screenshotOcr()
         base64_image = encode_image(path)
-        OCR_phase = f"""Here is a list of the text and corresponding centerpoint coordinates of text retrieved from using OCR on the screen, use it for reference in tasks that require precise x/y coordinates: {text_list}. These are not the only coordinates you can click, they are just there for reference.
+        OCR_phase = f""" In the above screenshot, OCR has been performed, here are the centerpoints of found text for your reference in localization: {text_list}.
+        
+        Here is what will identify whether the task is complete or not (if true, you must use taskDone()): {completionsRequirements}    
         
         Note:
         
             -Use {MainBrowser} as your default web browser unless the command states otherwise
             -To open ANY application, use open_application() function, do not press win and type it manually
             -To use search bar in a browser, you MUST use the use_searchBar() function, do not click on it and write manually
-            -If your task only involves speaking, you can use doNothing as a placeholder in the action portion (For example, if it is a question about something on their scre
+            -If your task only involves speaking, you can use doNothing as a placeholder in the action portion (For example, if it is a question about something on their screen), once you said all the information nessacary use the taskDone() function immediately to signify that the task is complete do not repeat or be redundant.
             -Do not add any comments to the operation code, or add on any elements that do not follow the given format exactly.
             -Do not perform redundant actions, for example if the current screen already has a browser or relavant website open there is no need to perform the actions to do it again 
             -Immediately use taskDone() when the overall task is done, do not perform any extra actions that are not implicit in the command
             -If trying the same thing twice doesn't work, try a different action
-        
+            -Make sure to differentiate between conversational tasks (ex: "what's on my screen") vs action tasks (ex: "open google docs and write a poem"), the former types do not require action (other than taskDone when complete) while the latter does. You can use speaking for either.
+            -Never use quotations outside the function (for ex: "write('something')"), as it will mess up the execution function, instead do it in this format: write('something')
         """
         APOLLOOut = APOLLOCommander.chat.completions.create(
             model="gpt-4o-mini",
@@ -344,7 +372,7 @@ def outputCommands(command):
         memoryStorage += APOLLOOut
         APOLLOOut = json.loads(APOLLOOut)
         speak(APOLLOOut["speak"],"Male")
-        exec(APOLLOOut["operation"].replace('"', ""))
+        exec(APOLLOOut["operation"].replace('"',""), globals())
     return "Task completed."
 
 
