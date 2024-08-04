@@ -9,7 +9,8 @@ import pytesseract
 from PIL import Image, ImageDraw
 import mss
 import numpy as np
-
+from bs4 import BeautifulSoup
+import requests
 import APOLLO
 
 pyautogui.FAILSAFE = False
@@ -149,10 +150,20 @@ def screenshotOcr():
         image = draw_boxes(screen_img, text_boxes, data)
         image_path = "screenshotForApollo.png"
         image.save(image_path)
-        print(ocr_list)
         return image_path, ocr_list
 
 def taskDone():
-        APOLLO.taskDone = True
+        APOLLO.tDone = True
 
 
+def webScrape(link):
+    r = requests.get('link')
+
+    soup = BeautifulSoup(r.content, 'html.parser')
+
+    s = soup.find('div', class_='entry-content')
+    content = s.find_all('p')
+    APOLLO.memoryStorage += f""" Results of scraping {link}:
+
+    {content}
+    """
