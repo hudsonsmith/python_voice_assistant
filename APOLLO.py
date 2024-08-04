@@ -287,15 +287,14 @@ def outputCommands(command):
         
                # Example of open_application(app_name)
                # Open the given application
-               open_application("Google Chrome")
+               #Always use single quotes for the string arguement
+               open_application('Google Chrome')
         
         
            use_searchBar(query)
            
            webScrape(link)  
-           
-              #Use this webScrape function in any case possible in order to gain information from specific links of the web, for example the latest news.
-           
+                      
            doNothing()
         
            taskDone()
@@ -334,7 +333,7 @@ def outputCommands(command):
             -Immediately use taskDone() when the overall task is done, do not perform any extra actions that are not implicit in the command
             -If trying the same thing twice doesn't work, try a different action
             -Make sure to differentiate between conversational tasks (ex: "what's on my screen") vs action tasks (ex: "open google docs and write a poem"), the former types do not require action (other than taskDone when complete) while the latter does. You can use speaking for either.
-            -Use webScrape function whenever possible if the task involves extracting certain information from the web and you know a suitable link
+            -Keep in mind loading times, if the screen looks like it is in a loading state please use a wait action.
         """
         APOLLOOut = APOLLOCommander.chat.completions.create(
             model="gpt-4o-mini",
