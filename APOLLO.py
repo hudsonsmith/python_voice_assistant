@@ -30,7 +30,7 @@ def outputCommands(command):
     cursor_x = commands.currentMouseX
     cursor_y = commands.currentMouseY
     Completions_phase = f"""
-            You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You have the ability to perform various UI, terminal, and speech tasks in accordance to a user's command. You have access to the user's screen. Your current overall task is {command}. Please concisely, in one sentence, describe the conditions under which this task will be complete.
+            You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You have the ability to perform various UI, terminal, web scraping, and speech tasks in accordance to a user's command. You have access to the user's screen. Your current overall task is {command}. Please concisely, in one sentence, describe the conditions under which this task will be complete.
 
             """
     APOLLOOut = APOLLOCommander.chat.completions.create(
@@ -51,12 +51,13 @@ def outputCommands(command):
     )
     completionsRequirements = APOLLOOut.choices[0].message.content
     print(completionsRequirements)
+    global memoryStorage
     memoryStorage = ""
     global tDone
     tDone = False
     while tDone == False:
         Action_phase = f"""
-        You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You’re very familiar with the {OperSys} operating system, and terminal and UI operations. Now you need to use the {OperSys} operating system to complete a mission. Your goal now is to manipulate a computer screen with height: {screen_height} and width: {screen_width}. Your current mouse position is {cursor_x},{cursor_y}. The overall mission is: "{command}". 
+        You are APOLLO, a personal virtual computer assistant developed by dAIlight Technologies. You’re very familiar with the {OperSys} operating system, and terminal, webscraping, and UI operations. Now you need to use the {OperSys} operating system to complete a mission. Your goal now is to manipulate a computer screen with height: {screen_height} and width: {screen_width}. Your current mouse position is {cursor_x},{cursor_y}. The overall mission is: "{command}". 
     
     
         Here are the previous actions you have taken:
@@ -273,14 +274,6 @@ def outputCommands(command):
                keyUp("shift")
         
         
-           hotkey(tup)
-        
-        
-               # Example of hotkey(tup)
-               # Press the "ctrl" + "c" hotkey combination
-               hotkey("ctrl", "c")
-        
-        
            doubleClick()
         
         
@@ -299,6 +292,9 @@ def outputCommands(command):
         
            use_searchBar(query)
            
+           webScrape(link)  
+           
+              #Use this webScrape function in any case possible in order to gain information from specific links of the web, for example the latest news.
            
            doNothing()
         
@@ -312,7 +308,7 @@ def outputCommands(command):
           "plan": " A multi-step future plan that does not involve low-level operations (start from current screen and action, DON’T include previous actions); steps indexed by numbers. Be sure to pretend that you don’t know the future interface and actions, and don’t know the elements not existing on the current screen. If the overall task is complete, make your plan to perform the taskDone function. Make the individual steps detailed, but try to keep the number of steps to an absolute minimum required.",
           "action": "describe The specific immediate action that needs to be taken, ex: Click the ’Search’ button to proceed with the search based on the entered criteria. This button is located towards the right side of the screen.If the overall task is complete, make your action to perform the taskDone function.",
           "speak": "Say something to the user if relevant to the user's command (E: they ask you for information about their screen or something you already know) or you want to give a status report (optional, if not needed just keep it blank)",
-          "operation": "the specific function you want to undertake to get closer to the overall command, ex: use_searchBar(“Shoes on sale”). If the overall command has been completed and there is nothing more to do, please perform taskDone()."
+          "operation": "the specific function you want to undertake to get closer to the overall command, ex: use_searchBar(“Shoes on sale”). If the overall command has been completed and there is nothing more to do, please perform taskDone(). No comments."
         }
         
         """ + f"""      
@@ -338,7 +334,7 @@ def outputCommands(command):
             -Immediately use taskDone() when the overall task is done, do not perform any extra actions that are not implicit in the command
             -If trying the same thing twice doesn't work, try a different action
             -Make sure to differentiate between conversational tasks (ex: "what's on my screen") vs action tasks (ex: "open google docs and write a poem"), the former types do not require action (other than taskDone when complete) while the latter does. You can use speaking for either.
-            -Never use quotations outside the function (for ex: "write('something')"), as it will mess up the execution function, instead do it in this format: write('something')
+            -Use webScrape function whenever possible if the task involves extracting certain information from the web and you know a suitable link
         """
         APOLLOOut = APOLLOCommander.chat.completions.create(
             model="gpt-4o-mini",
